@@ -27,27 +27,15 @@ class GameManager {
 // Class who represents the Player and contains the game logic for inputs
 class Player {
 	constructor(x, y, side) {
+		this.x = x;
+		this.y = y;
 		this.side = side;
-		this.setPosition(x, y);
-	}
-
-	setPosition(x, y) {
-		let { side } = this;
-		this.x = x - side / 2;
-		this.y = y - side / 2;
-	}
-
-	getPosition() {
-		return {
-			x: this.x,
-			y: this.y
-		};
 	}
 
 	draw(ctx) {
 		let { x, y, side } = this;
 		ctx.strokeStyle = 'blue';
-		ctx.strokeRect(x, y, side, side);
+		ctx.strokeRect(x - side / 2, y - side / 2, side, side);
 	}
 }
 
