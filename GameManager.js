@@ -5,11 +5,12 @@ class GameManager {
 		this.height = canvas.height;
 		this.width = canvas.width;
 		this.ctx = canvas.getContext('2d');
-		this.i = 0;
-		// this.updateFrame = this.updateFrame.bind(this);
 	}
 
 	start() {
+		let { height, width } = this;
+		this.player = new Player(height / 2, width / 2, 20);
+
 		window.requestAnimationFrame(() => this.updateFrame());
 		console.log('Game Started');
 	}
@@ -20,19 +21,17 @@ class GameManager {
 	}
 
 	draw() {
-		let { ctx, height, width, i } = this;
+		let { ctx, height, width } = this;
 
 		ctx.clearRect(0, 0, width, height);
 
 		ctx.beginPath();
 		ctx.strokeStyle = 'black';
 		let radius = height / 20;
-		ctx.arc(width / 2, height / 2, radius + i, 0, Math.PI * 2, true);
+		ctx.arc(width / 2, height / 2, radius, 0, Math.PI * 2, true);
 		ctx.stroke();
 		ctx.closePath();
-		this.i = i + 0.1;
 
-		this.player = new Player(height / 2, width / 2, 20);
 		this.player.draw(ctx);
 	}
 }
@@ -43,12 +42,24 @@ class Player {
 		this.x = x;
 		this.y = y;
 		this.side = side;
+		document.addEventListener('keydown', (event) => this.processInput(event.keyCode));
 	}
 
 	draw(ctx) {
 		let { x, y, side } = this;
 		ctx.strokeStyle = 'blue';
 		ctx.strokeRect(x - side / 2, y - side / 2, side, side);
+	}
+
+	processInput(keyCode) {
+		switch (keyCode) {
+			case 37: // left arrow
+				this.x -= 10;
+				break;
+			case 39: // right arrow
+				this.x += 10;
+				break;
+		}
 	}
 }
 
