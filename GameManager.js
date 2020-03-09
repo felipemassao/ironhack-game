@@ -24,7 +24,7 @@ class GameManager {
 
 	calculatePositions() {
 		let { player } = this;
-		player.calculateNewPosition();
+		player.transform.calculateNewPosition();
 	}
 
 	draw() {
@@ -44,8 +44,7 @@ class GameManager {
 	}
 }
 
-// Class who represents the Player and contains the game logic for inputs
-class Player {
+class RadialTransform2D {
 	constructor(initialX, initialY, movementRadius, side) {
 		//Anchor
 		this.initialX = initialX;
@@ -59,23 +58,9 @@ class Player {
 		this.movementRadius = movementRadius;
 		this.angle = 0;
 
-		this.speed = 0.03;
+		this.speed = 0.05;
 		this.side = side;
-
-		document.addEventListener('keydown', (event) => this.processInput(event.keyCode));
 		this.calculateNewPosition();
-	}
-
-	processInput(keyCode) {
-		let { speed } = this;
-		switch (keyCode) {
-			case 37: // left arrow
-				this.angle -= Math.PI * 2 * speed;
-				break;
-			case 39: // right arrow
-				this.angle += Math.PI * 2 * speed;
-				break;
-		}
 	}
 
 	calculateNewPosition() {
@@ -83,9 +68,32 @@ class Player {
 		this.x = movementRadius * Math.cos(angle) + initialX;
 		this.y = movementRadius * Math.sin(angle) + initialY;
 	}
+}
+
+// Class who represents the Player and contains the game logic for inputs
+class Player {
+	constructor(initialX, initialY, movementRadius, side) {
+		this.transform = new RadialTransform2D(initialX, initialY, movementRadius, side);
+
+		this.side = side;
+		document.addEventListener('keydown', (event) => this.processInput(event.keyCode));
+	}
+
+	processInput(keyCode) {
+		let { speed } = this.transform;
+		switch (keyCode) {
+			case 37: // left arrow
+				this.transform.angle -= Math.PI * 2 * speed;
+				break;
+			case 39: // right arrow
+				this.transform.angle += Math.PI * 2 * speed;
+				break;
+		}
+	}
 
 	draw(ctx) {
-		let { x, y, angle, side } = this;
+		let { side } = this;
+		let { x, y, angle } = this.transform;
 		ctx.save();
 
 		// Draw Rectangle
@@ -106,4 +114,8 @@ class Player {
 }
 
 // Blocks the player must avoid
-class Block {}
+class Block {
+	constructor(initialX, initialY, movementRadius){
+		this.transform = new RadialTransform2D(initialX, initialY, movementRadius);
+	}
+}
