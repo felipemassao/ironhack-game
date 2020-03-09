@@ -5,30 +5,48 @@ class GameManager {
 		this.height = canvas.height;
 		this.width = canvas.width;
 		this.movementRadius = this.height / 20;
+		this.numberOfBlocks = 10;
 		this.ctx = canvas.getContext('2d');
 	}
 
 	start() {
 		let { height, width, movementRadius } = this;
-		this.player = new Player(height / 2, width / 2, movementRadius, 20);
+		this.player = new Player(height / 2, width / 2, movementRadius, 0, 20);
+
+		this.createBlocks();
 
 		window.requestAnimationFrame(() => this.updateFrame());
 		console.log('Game Started');
 	}
-
+	
 	updateFrame() {
 		this.calculatePositions();
 		this.draw();
 		window.requestAnimationFrame(() => this.updateFrame());
 	}
+	
+	createBlocks() {
+		let { canvas, width, height, numberOfBlocks } = this;
+		this.blocks = [];
+
+		for(let i = 0; i < numberOfBlocks; i++){
+			let randomRadius = random(canvas.width);
+			let randomAngle = randomFloat(Math.PI * 2);
+			this.blocks.push(new Block(width / 2, height / 2, randomRadius, randomAngle, 40));
+		}
+	}
 
 	calculatePositions() {
 		let { player } = this;
 		player.transform.calculateNewPosition();
+		this.blocks.forEach( block => {
+			block.moveTowardsCenter();
+			block.transform.calculateNewPosition();
+		});
 	}
 
 	draw() {
-		let { ctx, height, width, movementRadius, player } = this;
+		let { ctx, height, width, movementRadius, player, blocks } = this;
 
 		ctx.clearRect(0, 0, width, height);
 
@@ -41,14 +59,15 @@ class GameManager {
 		ctx.restore();
 
 		player.draw(ctx);
+		blocks.forEach(block => block.draw(ctx));
 	}
 }
 
 class RadialTransform2D {
-	constructor(initialX, initialY, movementRadius, side) {
+	constructor(anchorX, anchorY, movementRadius, angle) {
 		//Anchor
-		this.initialX = initialX;
-		this.initialY = initialY;
+		this.anchorX = anchorX;
+		this.anchorY = anchorY;
 
 		//Cartesian coordinates
 		this.x = 0;
@@ -56,24 +75,23 @@ class RadialTransform2D {
 
 		//Polar coordinates
 		this.movementRadius = movementRadius;
-		this.angle = 0;
+		this.angle = angle;
 
 		this.speed = 0.05;
-		this.side = side;
 		this.calculateNewPosition();
 	}
 
 	calculateNewPosition() {
-		let { initialX, initialY, movementRadius, angle } = this;
-		this.x = movementRadius * Math.cos(angle) + initialX;
-		this.y = movementRadius * Math.sin(angle) + initialY;
+		let { anchorX, anchorY, movementRadius, angle } = this;
+		this.x = movementRadius * Math.cos(angle) + anchorX;
+		this.y = movementRadius * Math.sin(angle) + anchorY;
 	}
 }
 
 // Class who represents the Player and contains the game logic for inputs
 class Player {
-	constructor(initialX, initialY, movementRadius, side) {
-		this.transform = new RadialTransform2D(initialX, initialY, movementRadius, side);
+	constructor(anchorX, anchorY, movementRadius, angle, side) {
+		this.transform = new RadialTransform2D(anchorX, anchorY, movementRadius, angle);
 
 		this.side = side;
 		document.addEventListener('keydown', (event) => this.processInput(event.keyCode));
@@ -115,7 +133,31 @@ class Player {
 
 // Blocks the player must avoid
 class Block {
-	constructor(initialX, initialY, movementRadius){
-		this.transform = new RadialTransform2D(initialX, initialY, movementRadius);
+	constructor(anchorX, anchorY, movementRadius, angle, side){
+		this.transform = new RadialTransform2D(anchorX, anchorY, movementRadius, angle);
+		this.side = side;
+	}
+
+	moveTowardsCenter(){
+		if(this.transform.movementRadius <= 2) {
+			this.transform.movementRadius = 2;
+		 } else {
+			this.transform.movementRadius -= 1;
+		 } 
+	}
+
+	draw(ctx){
+		let { side } = this;
+		let { x, y, angle } = this.transform;
+
+		ctx.save();
+
+		// Draw Rectangle
+		ctx.strokeStyle = 'red';
+		ctx.translate(x, y);
+		ctx.rotate(Math.PI / 4 + angle);
+		ctx.strokeRect(-1 * side / 2, -1 * side / 2, side, side);
+
+		ctx.restore();
 	}
 }
