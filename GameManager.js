@@ -10,6 +10,11 @@ class GameManager {
 		this.blocks = [];
 		this.spawnRate = 100;
 		this.framesAfterSpawn = 0;
+		this.spawnRateIncrease = 1.5;
+		this.spawnRateLowLimit = 10;
+		this.blockSpeed = 1;
+		this.blockSpeedIncrease= 0.1;
+		this.blockSpeedMaxLimit = 5;
 
 		this.gameOver = false;
 		this.ctx = canvas.getContext('2d');
@@ -36,16 +41,34 @@ class GameManager {
 	}
 	
 	createBlock() {
-		let { canvas, width, height, spawnRate, framesAfterSpawn } = this;
+		let { canvas, width, height, spawnRate, framesAfterSpawn, blockSpeed } = this;
 
 		if(framesAfterSpawn > spawnRate){
 			let spawnRadius = canvas.width / 2;
 			let randomAngle = randomFloat(Math.PI * 2);
-			this.blocks.push(new Block(width / 2, height / 2, spawnRadius, randomAngle, 40));
+			this.blocks.push(new Block(width / 2, height / 2, spawnRadius, randomAngle, 40, blockSpeed));
 			this.framesAfterSpawn = 0;
+			this.increaseSpawnRate();
+			this.increaseBlockSpeed();
 		} else {
 			this.framesAfterSpawn += 1;
 		}
+	}
+
+	increaseSpawnRate(){
+		let { spawnRate, spawnRateLowLimit } = this;
+		if(spawnRate > spawnRateLowLimit){
+			this.spawnRate -= 1;
+		}
+		console.log(this.spawnRate);
+	}
+
+	increaseBlockSpeed(){
+		let { blockSpeed, blockSpeedIncrease, blockSpeedMaxLimit } = this;
+		if(blockSpeed < blockSpeedMaxLimit){
+			this.blockSpeed += blockSpeedIncrease;
+		}
+		console.log(this.blockSpeed);
 	}
 
 	calculatePositions() {
@@ -95,8 +118,8 @@ class GameManager {
 
 	gameOverScreen(){
 		let { ctx, width, height } = this;
-		ctx.font = "20px Georgia";
-		ctx.fillText('Game Over', width / 2 - 60, height / 2 - 100);
+		ctx.font = "30px Georgia";
+		ctx.fillText('Game Over', width / 2 - 85, height / 2 - 100);
 	}
 }
 
@@ -176,22 +199,24 @@ class Player {
 
 // Blocks the player must avoid
 class Block {
-	constructor(anchorX, anchorY, radius, angle, side){
+	constructor(anchorX, anchorY, radius, angle, side, speed){
 		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
 		this.side = side;
+		this.speed = speed;
 	}
 
 	moveTowardsCenter(){
+		let { speed } = this;
 		if(this.transform.radius <= 2) {
 			this.transform.radius = 2;
 		} else {
-			this.transform.radius -= 1;
+			this.transform.radius -= 1 * speed;
 		}
 	}
 
 	draw(ctx){
 		let { side } = this;
-		let { x, y, angle } = this.transform;
+		let { x, y } = this.transform;
 
 		ctx.save();
 
