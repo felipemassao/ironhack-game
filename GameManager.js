@@ -21,6 +21,7 @@ class GameManager {
 	
 	updateFrame() {
 		this.calculatePositions();
+		this.destroyBlocks();
 		this.draw();
 		window.requestAnimationFrame(() => this.updateFrame());
 	}
@@ -45,6 +46,11 @@ class GameManager {
 		});
 	}
 
+	destroyBlocks() {
+		let { movementRadius } = this;
+		this.blocks = this.blocks.filter( block => block.transform.radius > movementRadius + block.side / 2);
+	}
+
 	draw() {
 		let { ctx, height, width, movementRadius, player, blocks } = this;
 
@@ -64,7 +70,7 @@ class GameManager {
 }
 
 class RadialTransform2D {
-	constructor(anchorX, anchorY, movementRadius, angle) {
+	constructor(anchorX, anchorY, radius, angle) {
 		//Anchor
 		this.anchorX = anchorX;
 		this.anchorY = anchorY;
@@ -74,7 +80,7 @@ class RadialTransform2D {
 		this.y = 0;
 
 		//Polar coordinates
-		this.movementRadius = movementRadius;
+		this.radius = radius;
 		this.angle = angle;
 
 		this.speed = 0.05;
@@ -82,17 +88,16 @@ class RadialTransform2D {
 	}
 
 	calculateNewPosition() {
-		let { anchorX, anchorY, movementRadius, angle } = this;
-		this.x = movementRadius * Math.cos(angle) + anchorX;
-		this.y = movementRadius * Math.sin(angle) + anchorY;
+		let { anchorX, anchorY, radius, angle } = this;
+		this.x = radius * Math.cos(angle) + anchorX;
+		this.y = radius * Math.sin(angle) + anchorY;
 	}
 }
 
 // Class who represents the Player and contains the game logic for inputs
 class Player {
-	constructor(anchorX, anchorY, movementRadius, angle, side) {
-		this.transform = new RadialTransform2D(anchorX, anchorY, movementRadius, angle);
-
+	constructor(anchorX, anchorY, radius, angle, side) {
+		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
 		this.side = side;
 		document.addEventListener('keydown', (event) => this.processInput(event.keyCode));
 	}
@@ -133,17 +138,17 @@ class Player {
 
 // Blocks the player must avoid
 class Block {
-	constructor(anchorX, anchorY, movementRadius, angle, side){
-		this.transform = new RadialTransform2D(anchorX, anchorY, movementRadius, angle);
+	constructor(anchorX, anchorY, radius, angle, side){
+		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
 		this.side = side;
 	}
 
 	moveTowardsCenter(){
-		if(this.transform.movementRadius <= 2) {
-			this.transform.movementRadius = 2;
-		 } else {
-			this.transform.movementRadius -= 1;
-		 } 
+		if(this.transform.radius <= 2) {
+			this.transform.radius = 2;
+		} else {
+			this.transform.radius -= 1;
+		}
 	}
 
 	draw(ctx){
@@ -155,7 +160,7 @@ class Block {
 		// Draw Rectangle
 		ctx.strokeStyle = 'red';
 		ctx.translate(x, y);
-		ctx.rotate(Math.PI / 4 + angle);
+		ctx.rotate(Math.PI / 2 + angle);
 		ctx.strokeRect(-1 * side / 2, -1 * side / 2, side, side);
 
 		ctx.restore();
