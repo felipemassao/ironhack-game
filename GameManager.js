@@ -5,7 +5,13 @@ class GameManager {
 		this.height = canvas.height;
 		this.width = canvas.width;
 		this.movementRadius = this.height / 20;
+
+		//Block properties
+		this.blocks = [];
 		this.numberOfBlocks = 10;
+		this.spawnRate = 100;
+		this.framesAfterSpawn = 0;
+
 		this.gameOver = false;
 		this.ctx = canvas.getContext('2d');
 	}
@@ -13,9 +19,6 @@ class GameManager {
 	start() {
 		let { height, width, movementRadius } = this;
 		this.player = new Player(height / 2, width / 2, movementRadius, 0, 20);
-
-		this.createBlocks();
-
 		window.requestAnimationFrame(() => this.updateFrame());
 		console.log('Game Started');
 	}
@@ -23,7 +26,8 @@ class GameManager {
 	updateFrame() {
 		if(!this.gameOver){
 			this.calculatePositions();
-			this.destroyBlocks();
+			this.createBlock();
+			this.blockCollisionWithCenter();
 			this.gameOver = this.checkCollisionWithPlayer();
 			this.draw();
 			window.requestAnimationFrame(() => this.updateFrame());
@@ -32,14 +36,16 @@ class GameManager {
 		}
 	}
 	
-	createBlocks() {
-		let { canvas, width, height, numberOfBlocks } = this;
-		this.blocks = [];
+	createBlock() {
+		let { canvas, width, height, numberOfBlocks, spawnRate, framesAfterSpawn } = this;
 
-		for(let i = 0; i < numberOfBlocks; i++){
-			let randomRadius = random(canvas.width);
+		if(framesAfterSpawn > spawnRate){
+			let spawnRadius = canvas.width / 2;
 			let randomAngle = randomFloat(Math.PI * 2);
-			this.blocks.push(new Block(width / 2, height / 2, randomRadius, randomAngle, 40));
+			this.blocks.push(new Block(width / 2, height / 2, spawnRadius, randomAngle, 40));
+			this.framesAfterSpawn = 0;
+		} else {
+			this.framesAfterSpawn += 1;
 		}
 	}
 
@@ -52,7 +58,7 @@ class GameManager {
 		});
 	}
 
-	destroyBlocks() {
+	blockCollisionWithCenter() {
 		let { movementRadius } = this;
 		this.blocks = this.blocks.filter( block => block.transform.radius > movementRadius + block.side / 2);
 	}
