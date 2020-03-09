@@ -8,7 +8,6 @@ class GameManager {
 
 		//Block properties
 		this.blocks = [];
-		this.numberOfBlocks = 10;
 		this.spawnRate = 100;
 		this.framesAfterSpawn = 0;
 
@@ -37,7 +36,7 @@ class GameManager {
 	}
 	
 	createBlock() {
-		let { canvas, width, height, numberOfBlocks, spawnRate, framesAfterSpawn } = this;
+		let { canvas, width, height, spawnRate, framesAfterSpawn } = this;
 
 		if(framesAfterSpawn > spawnRate){
 			let spawnRadius = canvas.width / 2;
@@ -195,12 +194,6 @@ class Block {
 		let { x, y, angle } = this.transform;
 
 		ctx.save();
-
-		// Draw Rectangle
-		// ctx.strokeStyle = 'red';
-		// ctx.translate(x, y);
-		// ctx.rotate(Math.PI / 2 + angle);
-		// ctx.strokeRect(-1 * side / 2, -1 * side / 2, side, side);
 
 		ctx.beginPath();
 		ctx.strokeStyle = 'red';
