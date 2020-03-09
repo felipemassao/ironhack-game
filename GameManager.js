@@ -8,14 +8,17 @@ class GameManager {
 
 		//Block properties
 		this.blocks = [];
+
 		this.spawnRate = 100;
 		this.framesAfterSpawn = 0;
-		this.spawnRateIncrease = 1.5;
+		this.spawnRateIncrease = 3;
 		this.spawnRateLowLimit = 10;
+
 		this.blockSpeed = 1;
-		this.blockSpeedIncrease= 0.1;
+		this.blockSpeedIncrease= 0.2;
 		this.blockSpeedMaxLimit = 5;
 
+		this.score = 0;
 		this.gameOver = false;
 		this.ctx = canvas.getContext('2d');
 	}
@@ -33,6 +36,7 @@ class GameManager {
 			this.createBlock();
 			this.blockCollisionWithCenter();
 			this.gameOver = this.checkCollisionWithPlayer();
+			this.increaseScore();
 			this.draw();
 			window.requestAnimationFrame(() => this.updateFrame());
 		} else {
@@ -60,7 +64,6 @@ class GameManager {
 		if(spawnRate > spawnRateLowLimit){
 			this.spawnRate -= 1;
 		}
-		console.log(this.spawnRate);
 	}
 
 	increaseBlockSpeed(){
@@ -68,7 +71,6 @@ class GameManager {
 		if(blockSpeed < blockSpeedMaxLimit){
 			this.blockSpeed += blockSpeedIncrease;
 		}
-		console.log(this.blockSpeed);
 	}
 
 	calculatePositions() {
@@ -99,11 +101,16 @@ class GameManager {
 		return collided;
 	}
 
+	increaseScore(){
+		this.score += 1;
+	}
+
 	draw() {
 		let { ctx, height, width, movementRadius, player, blocks } = this;
 
 		ctx.clearRect(0, 0, width, height);
 
+		// Circle center
 		ctx.save();
 		ctx.beginPath();
 		ctx.strokeStyle = 'black';
@@ -111,6 +118,10 @@ class GameManager {
 		ctx.stroke();
 		ctx.closePath();
 		ctx.restore();
+
+		// Score
+		ctx.font = "20px Georgia";
+		ctx.fillText(`Score: ${this.score}`, width * 0.05, height * 0.05);
 
 		player.draw(ctx);
 		blocks.forEach(block => block.draw(ctx));
@@ -153,16 +164,22 @@ class Player {
 	constructor(anchorX, anchorY, radius, angle, side) {
 		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
 		this.side = side;
-		document.addEventListener('keydown', (event) => this.processInput(event.keyCode));
+		document.addEventListener('keydown', (event) => this.processKeyInput(event.keyCode));
 	}
 
-	processInput(keyCode) {
+	processKeyInput(keyCode) {
 		let { speed } = this.transform;
 		switch (keyCode) {
 			case 37: // left arrow
 				this.transform.angle -= Math.PI * 2 * speed;
 				break;
 			case 39: // right arrow
+				this.transform.angle += Math.PI * 2 * speed;
+				break;
+			case 65:
+				this.transform.angle -= Math.PI * 2 * speed;
+				break;
+			case 68:
 				this.transform.angle += Math.PI * 2 * speed;
 				break;
 		}
@@ -221,9 +238,9 @@ class Block {
 		ctx.save();
 
 		ctx.beginPath();
-		ctx.strokeStyle = 'red';
+		ctx.fillStyle = 'red';
 		ctx.arc(x, y, side / 2, 0, Math.PI * 2, true);
-		ctx.stroke();
+		ctx.fill();
 		ctx.closePath();
 
 		ctx.restore();
