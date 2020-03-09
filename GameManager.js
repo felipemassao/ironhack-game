@@ -6,6 +6,7 @@ class GameManager {
 		this.width = canvas.width;
 		this.movementRadius = this.height / 20;
 		this.numberOfBlocks = 10;
+		this.gameOver = false;
 		this.ctx = canvas.getContext('2d');
 	}
 
@@ -20,10 +21,15 @@ class GameManager {
 	}
 	
 	updateFrame() {
-		this.calculatePositions();
-		this.destroyBlocks();
-		this.draw();
-		window.requestAnimationFrame(() => this.updateFrame());
+		if(!this.gameOver){
+			this.calculatePositions();
+			this.destroyBlocks();
+			this.gameOver = this.checkCollisionWithPlayer();
+			this.draw();
+			window.requestAnimationFrame(() => this.updateFrame());
+		} else {
+			this.gameOverScreen();
+		}
 	}
 	
 	createBlocks() {
@@ -51,6 +57,20 @@ class GameManager {
 		this.blocks = this.blocks.filter( block => block.transform.radius > movementRadius + block.side / 2);
 	}
 
+	checkCollisionWithPlayer(){
+		let { player, blocks } = this;
+		let collided = false;
+		blocks.forEach( block => {
+			let boundaries = block.side / 2 + player.side / Math.sqrt(2);
+			let distance = distanceBetweenPoints(player.transform.x, player.transform.y, block.transform.x, block.transform.y);
+			if(boundaries > distance){
+				collided = true;
+				return;
+			}
+		});
+		return collided;
+	}
+
 	draw() {
 		let { ctx, height, width, movementRadius, player, blocks } = this;
 
@@ -66,6 +86,12 @@ class GameManager {
 
 		player.draw(ctx);
 		blocks.forEach(block => block.draw(ctx));
+	}
+
+	gameOverScreen(){
+		let { ctx, width, height } = this;
+		ctx.font = "20px Georgia";
+		ctx.fillText('Game Over', width / 2 - 60, height / 2 - 100);
 	}
 }
 
@@ -132,6 +158,13 @@ class Player {
 		ctx.fill();
 		ctx.closePath();
 
+		// Outer Circle
+		ctx.beginPath();
+		ctx.strokeStyle = 'blue';
+		ctx.arc(0, 0, side / Math.sqrt(2), 0, Math.PI * 2, true);
+		ctx.stroke();
+		ctx.closePath();
+
 		ctx.restore();
 	}
 }
@@ -158,10 +191,16 @@ class Block {
 		ctx.save();
 
 		// Draw Rectangle
+		// ctx.strokeStyle = 'red';
+		// ctx.translate(x, y);
+		// ctx.rotate(Math.PI / 2 + angle);
+		// ctx.strokeRect(-1 * side / 2, -1 * side / 2, side, side);
+
+		ctx.beginPath();
 		ctx.strokeStyle = 'red';
-		ctx.translate(x, y);
-		ctx.rotate(Math.PI / 2 + angle);
-		ctx.strokeRect(-1 * side / 2, -1 * side / 2, side, side);
+		ctx.arc(x, y, side / 2, 0, Math.PI * 2, true);
+		ctx.stroke();
+		ctx.closePath();
 
 		ctx.restore();
 	}
