@@ -75,6 +75,7 @@ class GameManager {
 
 	calculatePositions() {
 		let { player } = this;
+		player.proccessInput();
 		player.transform.calculateNewPosition();
 		this.blocks.forEach( block => {
 			block.moveTowardsCenter();
@@ -148,7 +149,7 @@ class RadialTransform2D {
 		this.radius = radius;
 		this.angle = angle;
 
-		this.speed = 0.05;
+		this.speed = 0.01;
 		this.calculateNewPosition();
 	}
 
@@ -164,24 +165,44 @@ class Player {
 	constructor(anchorX, anchorY, radius, angle, side) {
 		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
 		this.side = side;
-		document.addEventListener('keydown', (event) => this.processKeyInput(event.keyCode));
+		this.keysPressed = { left: false, right: false };
+		document.addEventListener('keydown', (event) => this.keyDownInput(event.keyCode));
+		document.addEventListener('keyup', (event) => this.keyUpInput(event.keyCode));
 	}
 
-	processKeyInput(keyCode) {
-		let { speed } = this.transform;
+	keyDownInput(keyCode) {
 		switch (keyCode) {
 			case 37: // left arrow
-				this.transform.angle -= Math.PI * 2 * speed;
+				this.keysPressed.left = true;
+				console.log('left pressed');
 				break;
 			case 39: // right arrow
-				this.transform.angle += Math.PI * 2 * speed;
+				this.keysPressed.right = true;
+				console.log('right pressed');
 				break;
-			case 65:
-				this.transform.angle -= Math.PI * 2 * speed;
+		}
+	}
+
+	keyUpInput(keyCode) {
+		switch (keyCode) {
+			case 37: // left arrow
+				this.keysPressed.left = false;
+				console.log('left released');
 				break;
-			case 68:
-				this.transform.angle += Math.PI * 2 * speed;
+			case 39: // right arrow
+				this.keysPressed.right = false;
+				console.log('right released');
 				break;
+		}
+	}
+
+	proccessInput(){
+		const { speed } = this.transform;
+		if(this.keysPressed.left){
+			this.transform.angle -= Math.PI * 2 * speed;
+		}
+		if(this.keysPressed.right){
+			this.transform.angle += Math.PI * 2 * speed;
 		}
 	}
 
