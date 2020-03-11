@@ -42,11 +42,17 @@ class GameManager {
 	updateFrame() {
 		if(!this.gameOver){
 			this.calculatePositions();
+
+			// Creation
 			this.createBullet();
 			this.createBlock();
 			this.eraseBulletWhenItReachesTheEnd();
+
+			// Collisions
 			this.blockCollisionWithCenter();
+			this.bulletCollisionWithBlock();
 			this.gameOver = this.checkCollisionWithPlayer();
+			
 			this.increaseScore();
 			this.draw();
 			window.requestAnimationFrame(() => this.updateFrame());
@@ -119,6 +125,22 @@ class GameManager {
 	blockCollisionWithCenter() {
 		let { movementRadius } = this;
 		this.blocks = this.blocks.filter( block => block.transform.radius > movementRadius + block.side / 2);
+	}
+
+	bulletCollisionWithBlock(){
+		this.bullets.forEach( (bullet, bulletIdx) => {
+			this.blocks.forEach( (block, blockIdx) => {
+				const bulletX = bullet.transform.x;
+				const bulletY = bullet.transform.y;
+				const blockX = block.transform.x;
+				const blockY = block.transform.y;
+
+				if(distanceBetweenPoints(bulletX, bulletY, blockX, blockY) < block.side / 2){
+					this.blocks.splice(blockIdx, 1);
+					this.bullets.splice(bulletIdx, 1);
+				}
+			});
+		});
 	}
 
 	checkCollisionWithPlayer() {

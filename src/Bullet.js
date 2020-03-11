@@ -16,7 +16,7 @@ class Bullet {
 
 		ctx.beginPath();
 		ctx.fillStyle = 'yellow';
-		ctx.arc(x, y, side / 2, 0, Math.PI * 2, true);
+		ctx.arc(x, y, side / 4, 0, Math.PI * 2, true);
 		ctx.fill();
 		ctx.closePath();
 	}
