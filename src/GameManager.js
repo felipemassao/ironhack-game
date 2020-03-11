@@ -113,13 +113,14 @@ class GameManager {
 		ctx.clearRect(0, 0, width, height);
 
 		// Circle center
-		ctx.save();
-		ctx.beginPath();
-		ctx.strokeStyle = 'white';
-		ctx.arc(width / 2, height / 2, movementRadius, 0, Math.PI * 2, true);
-		ctx.stroke();
-		ctx.closePath();
-		ctx.restore();
+		// ctx.save();
+		// ctx.beginPath();
+		// ctx.strokeStyle = 'white';
+		// ctx.arc(width / 2, height / 2, movementRadius, 0, Math.PI * 2, true);
+		// ctx.stroke();
+		// ctx.closePath();
+		// ctx.restore();
+		this.drawEarth(ctx);
 
 		// Score
 		ctx.font = "20px Georgia";
@@ -128,6 +129,13 @@ class GameManager {
 
 		player.draw(ctx);
 		blocks.forEach(block => block.draw(ctx));
+	}
+
+	drawEarth(){
+		const { ctx, height, width, movementRadius } = this;
+		const img = new Image();
+		img.src = 'src/earth.png';
+		ctx.drawImage(img, width / 2 - movementRadius, height / 2 - movementRadius, movementRadius * 2, movementRadius * 2);
 	}
 
 	gameOverScreen() {
