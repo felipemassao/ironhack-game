@@ -5,7 +5,7 @@ class GameManager {
 		this.ctx = canvas.getContext('2d');
 		this.height = canvas.height;
 		this.width = canvas.width;
-		this.movementRadius = this.height / 20;
+		this.movementRadius = this.height / 10;
 
 		//Block properties
 		this.blocks = [];
@@ -21,14 +21,17 @@ class GameManager {
 
 		//Score
 		this.score = 0;
+		this.highScoreString = 'high_score';
+		this.highScore = 0;
 		this.gameOver = false;
 	}
 
 	start() {
-		let { height, width, movementRadius } = this;
+		let { height, width, movementRadius, highScoreString } = this;
 		this.player = new Player(height / 2, width / 2, movementRadius, 0, 20);
+		this.highScore = window.localStorage.getItem(highScoreString);
+		if(this.highScore === null) this.highScore = 0;
 		window.requestAnimationFrame(() => this.updateFrame());
-		console.log('Game Started');
 	}
 	
 	updateFrame() {
@@ -41,6 +44,7 @@ class GameManager {
 			this.draw();
 			window.requestAnimationFrame(() => this.updateFrame());
 		} else {
+			this.setHighScore();
 			this.gameOverScreen();
 		}
 	}
@@ -108,7 +112,7 @@ class GameManager {
 	}
 
 	draw() {
-		let { ctx, height, width, movementRadius, player, blocks } = this;
+		let { ctx, height, width, player, blocks } = this;
 
 		ctx.clearRect(0, 0, width, height);
 
@@ -120,6 +124,11 @@ class GameManager {
 		ctx.fillStyle = 'white';
 		ctx.fillText(`Score: ${this.score}`, width * 0.05, height * 0.05);
 
+		// High Score
+		ctx.font = "20px Georgia";
+		ctx.fillStyle = 'white';
+		ctx.fillText(`High Score: ${this.highScore}`, width * 0.60, height * 0.05);
+
 		player.draw(ctx);
 		blocks.forEach(block => block.draw(ctx));
 	}
@@ -129,6 +138,11 @@ class GameManager {
 		const img = new Image();
 		img.src = 'src/earth.png';
 		ctx.drawImage(img, width / 2 - movementRadius, height / 2 - movementRadius, movementRadius * 2, movementRadius * 2);
+	}
+
+	setHighScore(){
+		const { score, highScore, highScoreString } = this;
+		if(score > highScore) window.localStorage.setItem(highScoreString, score);
 	}
 
 	gameOverScreen() {

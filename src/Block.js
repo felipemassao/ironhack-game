@@ -13,7 +13,6 @@ class Block {
 		} else {
 			this.transform.radius -= 1 * speed;
 		}
-		console.log(this.transform.radius);
 	}
 
 	draw(ctx){

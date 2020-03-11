@@ -33,7 +33,7 @@ class Player {
 	processInput(){
 		const { speed } = this.transform;
 		if(this.keysPressed.left){
-			this.transform.angle -= Math.PI * 2 * speed; // 0.06283
+			this.transform.angle -= Math.PI * 2 * speed;
 		}
 		if(this.keysPressed.right){
 			this.transform.angle += Math.PI * 2 * speed;
@@ -64,6 +64,16 @@ class Player {
 		ctx.arc(0, 0, side / Math.sqrt(2), 0, Math.PI * 2, true);
 		ctx.stroke();
 		ctx.closePath();
+
+		ctx.restore();
+
+		ctx.save();
+
+		ctx.translate(x, y);
+		ctx.rotate(Math.PI / 2 + angle);
+		const img = new Image();
+		img.src = 'src/pitrizzo-SpaceShip-gpl3-opengameart-96x96.png';
+		ctx.drawImage(img, - side, - side, side * 2, side * 2);
 
 		ctx.restore();
 	}
