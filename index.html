@@ -7,11 +7,33 @@
     <title>Game</title>
 </head>
 <body>
+
+    <div class="title">
+        <h1>Protect the Earth</h1>
+        <div class="instructions"></div>
+        <ul>
+            <li>(space) Shoot</li>
+            <li>(→) Move RIGHT</li>
+            <li>(←) Move LEFT</li>
+        </ul>
+        <div class="instructions-container">
+            <button id="start-button">Start Game</button>
+            <button id="restart-button">Stop Game</button>
+
+        </div>
+    </div>
+    <!-- create a canvas element -->
+    <div class="container">
+        <canvas id="canvas" width='600' height='600'></canvas>
+    </div>
+    <script src="canvas.js"></script>
+</body>
+<!-- <body>
     <button id='start'>Start Game</button>
     <div>
-        <canvas width='700' height='700'></canvas>
+        <canvas width='600' height='600'></canvas>
     </div>
-</body>
+</body> -->
 <script src="src/helperFunctions.js"></script>
 <script src="src/Bullet.js"></script>
 <script src="src/Block.js"></script>

@@ -1,6 +1,6 @@
 let canvas = document.querySelector('canvas');
 
-document.getElementById('start').addEventListener('click', (event) => {
+document.getElementById('start-button').addEventListener('click', (event) => {
 	let gameManager = new GameManager(canvas);
 	gameManager.start();
 });
