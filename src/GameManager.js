@@ -24,6 +24,9 @@ class GameManager {
 		this.bulletSize = 10;
 		this.bulletSpeed = 3;
 
+		//Earth
+		this.earthLives = 3;
+
 		//Score
 		this.score = 0;
 		this.highScoreString = 'high_score';
@@ -52,6 +55,7 @@ class GameManager {
 			this.blockCollisionWithCenter();
 			this.bulletCollisionWithBlock();
 			this.gameOver = this.checkCollisionWithPlayer();
+			this.gameOver = this.checkEarthLives();
 			
 			this.increaseScore();
 			this.draw();
@@ -124,7 +128,12 @@ class GameManager {
 
 	blockCollisionWithCenter() {
 		let { movementRadius } = this;
+		const numberOfBlocksBefore = this.blocks.length;
 		this.blocks = this.blocks.filter( block => block.transform.radius > movementRadius + block.side / 2);
+		const numberOfBlocksAfter = this.blocks.length;
+		if(numberOfBlocksBefore > numberOfBlocksAfter){
+			this.earthLives -= 1;
+		}
 	}
 
 	bulletCollisionWithBlock(){
@@ -157,6 +166,10 @@ class GameManager {
 		return collided;
 	}
 
+	checkEarthLives(){
+		return this.earthLives === 0;
+	}
+
 	increaseScore() {
 		this.score += 1;
 	}
@@ -178,6 +191,11 @@ class GameManager {
 		ctx.font = "20px Georgia";
 		ctx.fillStyle = 'white';
 		ctx.fillText(`High Score: ${this.highScore}`, width * 0.60, height * 0.05);
+
+		// Lives
+		ctx.font = "20px Georgia";
+		ctx.fillStyle = 'white';
+		ctx.fillText(`Earth Lives: ${this.earthLives}`, width * 0.30, height * 0.05);
 
 		player.draw(ctx);
 		blocks.forEach(block => block.draw(ctx));
