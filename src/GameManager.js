@@ -22,7 +22,7 @@ class GameManager {
 		//Bullets
 		this.bullets = [];
 		this.bulletSize = 10;
-		this.bulletSpeed = 2;
+		this.bulletSpeed = 3;
 
 		//Score
 		this.score = 0;
@@ -44,6 +44,7 @@ class GameManager {
 			this.calculatePositions();
 			this.createBullet();
 			this.createBlock();
+			this.eraseBulletWhenItReachesTheEnd();
 			this.blockCollisionWithCenter();
 			this.gameOver = this.checkCollisionWithPlayer();
 			this.increaseScore();
@@ -76,6 +77,15 @@ class GameManager {
 		} else {
 			this.framesAfterSpawn += 1;
 		}
+	}
+
+	eraseBulletWhenItReachesTheEnd(){
+		const { width, height } = this;
+		this.bullets.forEach( (bullet, idx) => {
+			if(bullet.transform.x > width || bullet.transform.y > height){
+				this.bullets.splice(idx, 1);
+			}
+		});
 	}
 
 	increaseSpawnRate(){

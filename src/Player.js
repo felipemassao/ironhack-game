@@ -5,7 +5,7 @@ class Player {
 		this.side = side;
 		this.keysPressed = { left: false, right: false, shoot: false };
 		this.isShooting = false;
-		this.shootingCooldown = 50;
+		this.shootingCooldown = 10;
 		this.shootingAfterFrames = this.shootingCooldown;
 		document.addEventListener('keydown', (event) => this.keyDownInput(event.keyCode));
 		document.addEventListener('keyup', (event) => this.keyUpInput(event.keyCode));
@@ -47,7 +47,6 @@ class Player {
 		if(this.keysPressed.right){
 			this.transform.angle += Math.PI * 2 * speed;
 		}
-		console.log(this.shootingAfterFrames);
 		if(this.keysPressed.shoot && (this.shootingAfterFrames >= this.shootingCooldown)){
 			this.isShooting = true;
 			this.shootingAfterFrames = 0;
