@@ -3,7 +3,10 @@ class Player {
 	constructor(anchorX, anchorY, radius, angle, side) {
 		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
 		this.side = side;
-		this.keysPressed = { left: false, right: false };
+		this.keysPressed = { left: false, right: false, shoot: false };
+		this.isShooting = false;
+		this.shootingCooldown = 50;
+		this.shootingAfterFrames = this.shootingCooldown;
 		document.addEventListener('keydown', (event) => this.keyDownInput(event.keyCode));
 		document.addEventListener('keyup', (event) => this.keyUpInput(event.keyCode));
 	}
@@ -16,6 +19,9 @@ class Player {
 			case 39: // right arrow
 				this.keysPressed.right = true;
 				break;
+			case 81: // Q
+				this.keysPressed.shoot = true;
+				break;
 		}
 	}
 
@@ -27,6 +33,9 @@ class Player {
 			case 39: // right arrow
 				this.keysPressed.right = false;
 				break;
+			case 81: // Q
+				this.keysPressed.shoot = false;
+				break;
 		}
 	}
 
@@ -37,6 +46,14 @@ class Player {
 		}
 		if(this.keysPressed.right){
 			this.transform.angle += Math.PI * 2 * speed;
+		}
+		console.log(this.shootingAfterFrames);
+		if(this.keysPressed.shoot && (this.shootingAfterFrames >= this.shootingCooldown)){
+			this.isShooting = true;
+			this.shootingAfterFrames = 0;
+		} else {
+			this.isShooting = false;
+			if(this.shootingAfterFrames < this.shootingCooldown) this.shootingAfterFrames += 1;
 		}
 	}
 

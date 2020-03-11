@@ -19,6 +19,11 @@ class GameManager {
 		this.spawnRateIncrease = 3;
 		this.spawnRateLowLimit = 10;
 
+		//Bullets
+		this.bullets = [];
+		this.bulletSize = 10;
+		this.bulletSpeed = 2;
+
 		//Score
 		this.score = 0;
 		this.highScoreString = 'high_score';
@@ -37,6 +42,7 @@ class GameManager {
 	updateFrame() {
 		if(!this.gameOver){
 			this.calculatePositions();
+			this.createBullet();
 			this.createBlock();
 			this.blockCollisionWithCenter();
 			this.gameOver = this.checkCollisionWithPlayer();
@@ -46,6 +52,14 @@ class GameManager {
 		} else {
 			this.setHighScore();
 			this.gameOverScreen();
+		}
+	}
+
+	createBullet(){
+		const { width, height, player, bulletSize, bulletSpeed } = this;
+		const { radius, angle } = this.player.transform
+		if(player.isShooting){
+			this.bullets.push(new Bullet(width / 2, height / 2, radius, angle, bulletSize, bulletSpeed));
 		}
 	}
 	
@@ -86,6 +100,10 @@ class GameManager {
 			block.moveTowardsCenter();
 			block.transform.calculateNewPosition();
 		});
+		this.bullets.forEach( bullets => {
+			bullets.moveFoward();
+			bullets.transform.calculateNewPosition();
+		});
 	}
 
 	blockCollisionWithCenter() {
@@ -112,7 +130,7 @@ class GameManager {
 	}
 
 	draw() {
-		let { ctx, height, width, player, blocks } = this;
+		let { ctx, height, width, player, blocks, bullets } = this;
 
 		ctx.clearRect(0, 0, width, height);
 
@@ -131,6 +149,7 @@ class GameManager {
 
 		player.draw(ctx);
 		blocks.forEach(block => block.draw(ctx));
+		bullets.forEach(bullet => bullet.draw(ctx));
 	}
 
 	drawEarth(){
