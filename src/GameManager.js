@@ -113,13 +113,6 @@ class GameManager {
 		ctx.clearRect(0, 0, width, height);
 
 		// Circle center
-		// ctx.save();
-		// ctx.beginPath();
-		// ctx.strokeStyle = 'white';
-		// ctx.arc(width / 2, height / 2, movementRadius, 0, Math.PI * 2, true);
-		// ctx.stroke();
-		// ctx.closePath();
-		// ctx.restore();
 		this.drawEarth(ctx);
 
 		// Score
