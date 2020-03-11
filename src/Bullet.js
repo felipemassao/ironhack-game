@@ -15,9 +15,9 @@ class Bullet {
 		let { x, y } = this.transform;
 
 		ctx.beginPath();
-		ctx.strokeStyle = 'white';
-		ctx.arc(x, y, side, 0, Math.PI * 2, true);
-		ctx.stroke();
+		ctx.fillStyle = 'yellow';
+		ctx.arc(x, y, side / 2, 0, Math.PI * 2, true);
+		ctx.fill();
 		ctx.closePath();
 	}
 }
