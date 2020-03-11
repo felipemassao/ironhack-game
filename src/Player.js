@@ -7,8 +7,14 @@ class Player {
 		this.isShooting = false;
 		this.shootingCooldown = 10;
 		this.shootingAfterFrames = this.shootingCooldown;
-		document.addEventListener('keydown', (event) => this.keyDownInput(event.keyCode));
-		document.addEventListener('keyup', (event) => this.keyUpInput(event.keyCode));
+		document.addEventListener('keydown', (event) => {
+			event.preventDefault();
+			this.keyDownInput(event.keyCode)
+		});
+		document.addEventListener('keyup', (event) => {
+			event.preventDefault();
+			this.keyUpInput(event.keyCode)
+		});
 	}
 
 	keyDownInput(keyCode) {
@@ -19,7 +25,7 @@ class Player {
 			case 39: // right arrow
 				this.keysPressed.right = true;
 				break;
-			case 81: // Q
+			case 32: // space
 				this.keysPressed.shoot = true;
 				break;
 		}
@@ -33,7 +39,7 @@ class Player {
 			case 39: // right arrow
 				this.keysPressed.right = false;
 				break;
-			case 81: // Q
+			case 32: // space
 				this.keysPressed.shoot = false;
 				break;
 		}
