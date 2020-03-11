@@ -30,10 +30,10 @@ class Player {
 		}
 	}
 
-	proccessInput(){
+	processInput(){
 		const { speed } = this.transform;
 		if(this.keysPressed.left){
-			this.transform.angle -= Math.PI * 2 * speed;
+			this.transform.angle -= Math.PI * 2 * speed; // 0.06283
 		}
 		if(this.keysPressed.right){
 			this.transform.angle += Math.PI * 2 * speed;

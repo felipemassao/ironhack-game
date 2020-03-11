@@ -1,4 +1,4 @@
-// Blocks the player must avoid
+// Blocks the player must avoid **obs: now it is a circle collision and a meteor
 class Block {
 	constructor(anchorX, anchorY, radius, angle, side, speed){
 		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
@@ -13,20 +13,15 @@ class Block {
 		} else {
 			this.transform.radius -= 1 * speed;
 		}
+		console.log(this.transform.radius);
 	}
 
 	draw(ctx){
-		let { side } = this;
+		const { side } = this;
 		let { x, y } = this.transform;
 
-		ctx.save();
-
-		ctx.beginPath();
-		ctx.fillStyle = 'red';
-		ctx.arc(x, y, side / 2, 0, Math.PI * 2, true);
-		ctx.fill();
-		ctx.closePath();
-
-		ctx.restore();
+		const img = new Image();
+		img.src = 'src/New Piskel.gif';
+		ctx.drawImage(img, x - side / 2, y - side / 2, side, side);
 	}
 }

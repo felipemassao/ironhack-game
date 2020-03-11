@@ -2,25 +2,26 @@
 class GameManager {
 	constructor(canvas) {
 		this.canvas = canvas;
+		this.ctx = canvas.getContext('2d');
 		this.height = canvas.height;
 		this.width = canvas.width;
 		this.movementRadius = this.height / 20;
 
 		//Block properties
 		this.blocks = [];
+		this.blockSpeed = 1;
+		this.blockSpeedIncrease= 0.2;
+		this.blockSpeedMaxLimit = 5;
 
+		//Spawn rate of blocks
 		this.spawnRate = 100;
 		this.framesAfterSpawn = 0;
 		this.spawnRateIncrease = 3;
 		this.spawnRateLowLimit = 10;
 
-		this.blockSpeed = 1;
-		this.blockSpeedIncrease= 0.2;
-		this.blockSpeedMaxLimit = 5;
-
+		//Score
 		this.score = 0;
 		this.gameOver = false;
-		this.ctx = canvas.getContext('2d');
 	}
 
 	start() {
@@ -75,7 +76,7 @@ class GameManager {
 
 	calculatePositions() {
 		let { player } = this;
-		player.proccessInput();
+		player.processInput();
 		player.transform.calculateNewPosition();
 		this.blocks.forEach( block => {
 			block.moveTowardsCenter();
@@ -88,7 +89,7 @@ class GameManager {
 		this.blocks = this.blocks.filter( block => block.transform.radius > movementRadius + block.side / 2);
 	}
 
-	checkCollisionWithPlayer(){
+	checkCollisionWithPlayer() {
 		let { player, blocks } = this;
 		let collided = false;
 		blocks.forEach( block => {
@@ -102,7 +103,7 @@ class GameManager {
 		return collided;
 	}
 
-	increaseScore(){
+	increaseScore() {
 		this.score += 1;
 	}
 
@@ -114,7 +115,7 @@ class GameManager {
 		// Circle center
 		ctx.save();
 		ctx.beginPath();
-		ctx.strokeStyle = 'black';
+		ctx.strokeStyle = 'white';
 		ctx.arc(width / 2, height / 2, movementRadius, 0, Math.PI * 2, true);
 		ctx.stroke();
 		ctx.closePath();
@@ -122,15 +123,17 @@ class GameManager {
 
 		// Score
 		ctx.font = "20px Georgia";
+		ctx.fillStyle = 'white';
 		ctx.fillText(`Score: ${this.score}`, width * 0.05, height * 0.05);
 
 		player.draw(ctx);
 		blocks.forEach(block => block.draw(ctx));
 	}
 
-	gameOverScreen(){
+	gameOverScreen() {
 		let { ctx, width, height } = this;
 		ctx.font = "30px Georgia";
+		ctx.fillStyle = 'white';
 		ctx.fillText('Game Over', width / 2 - 85, height / 2 - 100);
 	}
 }

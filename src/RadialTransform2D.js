@@ -1,6 +1,6 @@
 class RadialTransform2D {
 	constructor(anchorX, anchorY, radius, angle) {
-		//Anchor
+		//Anchor of the object 2D
 		this.anchorX = anchorX;
 		this.anchorY = anchorY;
 
