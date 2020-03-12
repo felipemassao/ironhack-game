@@ -30,3 +30,7 @@ This game use:
 
 - HTML, CSS, Canvas and Javascript to make the animations and the logic of the game ;
 - Assets from https://opengameart.org/ ;
+
+## Contributing
+
+You can contribute on this project by forking, making your changes and sending a pull request.
