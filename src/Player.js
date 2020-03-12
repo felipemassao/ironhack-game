@@ -1,19 +1,23 @@
 // Class who represents the Player and contains the game logic for inputs
 class Player {
-	constructor(anchorX, anchorY, radius, angle, side) {
-		this.transform = new RadialTransform2D(anchorX, anchorY, radius, angle);
-		this.side = side;
-		this.keysPressed = { left: false, right: false, shoot: false };
+	constructor(transform, playerProperties) {
+		this.transform = transform;
+		this.playerRadius = playerProperties.playerRadius;
+		
+		//Shooting
 		this.isShooting = false;
-		this.shootingCooldown = 10;
+		this.shootingCooldown = playerProperties.shootingCooldown;
 		this.shootingAfterFrames = this.shootingCooldown;
+
+		//Inputs
+		this.keysPressed = { left: false, right: false, shoot: false };
 		document.addEventListener('keydown', (event) => {
 			event.preventDefault();
-			this.keyDownInput(event.keyCode)
+			this.keyDownInput(event.keyCode);
 		});
 		document.addEventListener('keyup', (event) => {
 			event.preventDefault();
-			this.keyUpInput(event.keyCode)
+			this.keyUpInput(event.keyCode);
 		});
 	}
 
@@ -63,40 +67,15 @@ class Player {
 	}
 
 	draw(ctx) {
-		const { side } = this;
+		const { playerRadius } = this;
 		const { x, y, angle } = this.transform;
-		ctx.save();
-
-		// Draw Rectangle
-		ctx.strokeStyle = 'blue';
-		ctx.translate(x, y);
-		ctx.rotate(Math.PI / 4 + angle);
-		ctx.strokeRect(-1 * side / 2, -1 * side / 2, side, side);
-
-		// Draw Center
-		ctx.beginPath();
-		ctx.fillStyle = 'blue';
-		ctx.arc(0, 0, 2, 0, Math.PI * 2, true);
-		ctx.fill();
-		ctx.closePath();
-
-		// Outer Circle
-		ctx.beginPath();
-		ctx.strokeStyle = 'blue';
-		ctx.arc(0, 0, side / Math.sqrt(2), 0, Math.PI * 2, true);
-		ctx.stroke();
-		ctx.closePath();
-
-		ctx.restore();
 
 		ctx.save();
-
 		ctx.translate(x, y);
 		ctx.rotate(Math.PI / 2 + angle);
 		const img = new Image();
 		img.src = 'src/pitrizzo-SpaceShip-gpl3-opengameart-96x96.png';
-		ctx.drawImage(img, - side, - side, side * 2, side * 2);
-
+		ctx.drawImage(img, - playerRadius, - playerRadius, playerRadius * 2, playerRadius * 2);
 		ctx.restore();
 	}
 }

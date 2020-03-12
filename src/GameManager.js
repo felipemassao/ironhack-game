@@ -24,6 +24,12 @@ class GameManager {
 		this.bulletSize = 10;
 		this.bulletSpeed = 3;
 
+		// Player Properties
+		this.playerProperties = {};
+		this.playerProperties.playerRadius = 20;
+		this.playerProperties.shootingCooldown = 10;
+		this.initialAngle = 0;
+
 		//Earth
 		this.earthLives = 3;
 
@@ -35,8 +41,9 @@ class GameManager {
 	}
 
 	start() {
-		const { height, width, movementRadius, highScoreString } = this;
-		this.player = new Player(height / 2, width / 2, movementRadius, 0, 20);
+		const { height, width, movementRadius, initialAngle, highScoreString, playerProperties } = this;
+		const transform = new RadialTransform2D(height / 2, width / 2, movementRadius, initialAngle);
+		this.player = new Player(transform, playerProperties);
 		this.highScore = window.localStorage.getItem(highScoreString);
 		if(this.highScore === null) this.highScore = 0;
 		window.requestAnimationFrame(() => this.updateFrame());
