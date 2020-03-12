@@ -35,7 +35,7 @@ class GameManager {
 	}
 
 	start() {
-		let { height, width, movementRadius, highScoreString } = this;
+		const { height, width, movementRadius, highScoreString } = this;
 		this.player = new Player(height / 2, width / 2, movementRadius, 0, 20);
 		this.highScore = window.localStorage.getItem(highScoreString);
 		if(this.highScore === null) this.highScore = 0;
@@ -75,7 +75,7 @@ class GameManager {
 	}
 	
 	createBlock() {
-		let { canvas, width, height, spawnRate, framesAfterSpawn, blockSpeed } = this;
+		const { canvas, width, height, spawnRate, framesAfterSpawn, blockSpeed } = this;
 
 		if(framesAfterSpawn > spawnRate){
 			let spawnRadius = canvas.width / 2;
@@ -99,21 +99,21 @@ class GameManager {
 	}
 
 	increaseSpawnRate(){
-		let { spawnRate, spawnRateLowLimit } = this;
+		const { spawnRate, spawnRateLowLimit } = this;
 		if(spawnRate > spawnRateLowLimit){
 			this.spawnRate -= 1;
 		}
 	}
 
 	increaseBlockSpeed(){
-		let { blockSpeed, blockSpeedIncrease, blockSpeedMaxLimit } = this;
+		const { blockSpeed, blockSpeedIncrease, blockSpeedMaxLimit } = this;
 		if(blockSpeed < blockSpeedMaxLimit){
 			this.blockSpeed += blockSpeedIncrease;
 		}
 	}
 
 	calculatePositions() {
-		let { player } = this;
+		const { player } = this;
 		player.processInput();
 		player.transform.calculateNewPosition();
 		this.blocks.forEach( block => {
@@ -127,7 +127,7 @@ class GameManager {
 	}
 
 	blockCollisionWithCenter() {
-		let { movementRadius } = this;
+		const { movementRadius } = this;
 		const numberOfBlocksBefore = this.blocks.length;
 		this.blocks = this.blocks.filter( block => block.transform.radius > movementRadius + block.side / 2);
 		const numberOfBlocksAfter = this.blocks.length;
@@ -153,7 +153,7 @@ class GameManager {
 	}
 
 	checkCollisionWithPlayer() {
-		let { player, blocks } = this;
+		const { player, blocks } = this;
 		let collided = false;
 		blocks.forEach( block => {
 			let boundaries = block.side / 2 + player.side / Math.sqrt(2);
@@ -175,7 +175,7 @@ class GameManager {
 	}
 
 	draw() {
-		let { ctx, height, width, player, blocks, bullets } = this;
+		const { ctx, height, width, player, blocks, bullets } = this;
 
 		ctx.clearRect(0, 0, width, height);
 
@@ -215,7 +215,7 @@ class GameManager {
 	}
 
 	gameOverScreen() {
-		let { ctx, width, height } = this;
+		const { ctx, width, height } = this;
 		ctx.font = "30px Georgia";
 		ctx.fillStyle = 'white';
 		ctx.fillText('Game Over', width / 2 - 85, height / 2 - 100);

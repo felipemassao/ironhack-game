@@ -6,13 +6,13 @@ class Bullet {
 	}
 
 	moveFoward(){
-		let { speed } = this;
+		const { speed } = this;
 		this.transform.radius += 1 * speed;
 	}
 
 	draw(ctx){
 		const { side } = this;
-		let { x, y } = this.transform;
+		const { x, y } = this.transform;
 
 		ctx.beginPath();
 		ctx.fillStyle = 'yellow';

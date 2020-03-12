@@ -17,7 +17,7 @@ class RadialTransform2D {
 	}
 
 	calculateNewPosition() {
-		let { anchorX, anchorY, radius, angle } = this;
+		const { anchorX, anchorY, radius, angle } = this;
 		this.x = radius * Math.cos(angle) + anchorX;
 		this.y = radius * Math.sin(angle) + anchorY;
 	}

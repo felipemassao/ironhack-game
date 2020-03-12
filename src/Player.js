@@ -63,8 +63,8 @@ class Player {
 	}
 
 	draw(ctx) {
-		let { side } = this;
-		let { x, y, angle } = this.transform;
+		const { side } = this;
+		const { x, y, angle } = this.transform;
 		ctx.save();
 
 		// Draw Rectangle

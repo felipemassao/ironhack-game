@@ -7,7 +7,7 @@ class Block {
 	}
 
 	moveTowardsCenter(){
-		let { speed } = this;
+		const { speed } = this;
 		if(this.transform.radius <= 2) {
 			this.transform.radius = 2;
 		} else {
@@ -17,7 +17,7 @@ class Block {
 
 	draw(ctx){
 		const { side } = this;
-		let { x, y } = this.transform;
+		const { x, y } = this.transform;
 
 		const img = new Image();
 		img.src = 'src/New Piskel.gif';
