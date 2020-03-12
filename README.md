@@ -1,7 +1,5 @@
 # Defend the Earth
 
-![screenshot](src/screen.jpg)
-
 To play the game click on this [link](https://felipemassao.github.io/ironhack-game/) to play the game on browser.
 
 Unfortunatelly the game does not run well on mobile.
