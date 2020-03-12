@@ -13,7 +13,6 @@ class RadialTransform2D {
 		this.angle = angle;
 
 		this.speed = 0.01;
-		this.calculateNewPosition();
 	}
 
 	calculateNewPosition() {
